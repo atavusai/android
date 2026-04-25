@@ -1,0 +1,7 @@
+<resources>
+    <string name="atavus_sdk_name">Atavus AI SDK</string>
+    <string name="atavus_chat_button_label">Open AI Chat</string>
+    <string name="atavus_input_placeholder">Type a message…</string>
+    <string name="atavus_connecting">Connecting…</string>
+    <string name="atavus_error_network">Network error. Please check your connection.</string>
+</resources>
