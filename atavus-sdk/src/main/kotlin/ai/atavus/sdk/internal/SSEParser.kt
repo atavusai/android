@@ -1,9 +1,5 @@
 package ai.atavus.sdk.internal
 
-import kotlinx.coroutines.channels.awaitClose
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.callbackFlow
-import kotlinx.serialization.json.Json
 
 /** Internal parser for Server-Sent Events (SSE). */
 internal object SSEParser {

@@ -40,6 +40,14 @@ class Session internal constructor(
         return client.streamMessage(text, sessionId = id)
     }
 
+    /**
+     * Manually append an assistant message after collecting a full stream.
+     * Call this after all chunks have been received.
+     */
+    fun appendAssistantMessage(text: String) {
+        _messages.add(Message(role = "assistant", content = text))
+    }
+
     /** Clears the conversation history. */
     fun clearHistory() {
         _messages.clear()

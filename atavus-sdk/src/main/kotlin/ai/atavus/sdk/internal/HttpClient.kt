@@ -1,6 +1,8 @@
 package ai.atavus.sdk.internal
 
 import kotlinx.serialization.json.Json
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -30,20 +32,24 @@ internal class HttpClient(
     }
 
     /** Performs a GET request. */
-    fun get(path: String): Result<String> = runCatching {
-        val request = buildRequest(path)
-        client.newCall(request).execute().use { response ->
-            handleResponse(response)
+    suspend fun get(path: String): Result<String> = runCatching {
+        withContext(Dispatchers.IO) {
+            val request = buildRequest(path)
+            client.newCall(request).execute().use { response ->
+                handleResponse(response)
+            }
         }
     }
 
     /** Performs a POST request with a JSON body. */
-    fun post(path: String, body: String): Result<String> = runCatching {
-        val request = buildRequest(path).newBuilder()
-            .post(body.toRequestBody(jsonMediaType))
-            .build()
-        client.newCall(request).execute().use { response ->
-            handleResponse(response)
+    suspend fun post(path: String, body: String): Result<String> = runCatching {
+        withContext(Dispatchers.IO) {
+            val request = buildRequest(path).newBuilder()
+                .post(body.toRequestBody(jsonMediaType))
+                .build()
+            client.newCall(request).execute().use { response ->
+                handleResponse(response)
+            }
         }
     }
 
@@ -54,7 +60,7 @@ internal class HttpClient(
         onEvent: (String) -> Unit,
         onError: (AtavusError) -> Unit,
         onComplete: () -> Unit
-    ) {
+    ): EventSource {
         val request = buildRequest(path).newBuilder()
             .post(body.toRequestBody(jsonMediaType))
             .build()
@@ -83,7 +89,7 @@ internal class HttpClient(
             }
         }
 
-        factory.newEventSource(request, listener)
+        return factory.newEventSource(request, listener)
     }
 
     private fun buildRequest(path: String): Request {
@@ -92,6 +98,7 @@ internal class HttpClient(
             .addHeader("Content-Type", "application/json")
             .addHeader("Authorization", "Bearer $apiKey")
             .addHeader("User-Agent", "AtavusAI-SDK/Android")
+            .addHeader("X-SDK-Version", "1.0.0")
             .build()
     }
 
@@ -114,9 +121,5 @@ internal class HttpClient(
                 throw AtavusError.Server(response.code, detail ?: "Server error")
             }
         }
-    }
-
-    companion object {
-        private val logTag = "AtavusAI-HTTP"
     }
 }

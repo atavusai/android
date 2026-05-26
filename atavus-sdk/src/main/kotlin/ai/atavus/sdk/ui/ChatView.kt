@@ -216,21 +216,24 @@ fun AtavusChatScreen(
 
                 FilledIconButton(
                     onClick = {
-                        scope.launch {
-                            sendMessage(
-                                text = inputText.trim(),
-                                client = client,
-                                session = session,
-                                onMessageAdded = { msg ->
-                                    messages = messages + msg
-                                    messageCounter++
-                                },
-                                onLoading = { isLoading = it },
-                                onError = { errorMessage = it },
-                                onNewMessageId = { messageCounter++ }
-                            )
+                        val trimmed = inputText.trim()
+                        if (trimmed.isNotBlank() && !isLoading) {
+                            scope.launch {
+                                sendMessage(
+                                    text = trimmed,
+                                    client = client,
+                                    session = session,
+                                    onMessageAdded = { msg ->
+                                        messages = messages + msg
+                                        messageCounter++
+                                    },
+                                    onLoading = { isLoading = it },
+                                    onError = { errorMessage = it },
+                                    onNewMessageId = { messageCounter++ }
+                                )
+                            }
+                            inputText = ""
                         }
-                        inputText = ""
                     },
                     enabled = inputText.isNotBlank() && !isLoading,
                     modifier = Modifier.size(44.dp),

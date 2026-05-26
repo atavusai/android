@@ -3,7 +3,7 @@ package ai.atavus.sdk
 /**
  * Errors that can occur when using the Atavus AI SDK.
  */
-sealed class AtavusError : Exception {
+sealed class AtavusError : Exception() {
     /** Invalid API key or authentication failure. */
     data class Authentication(val msg: String) : AtavusError()
     /** Network connectivity issue. */

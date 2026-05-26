@@ -51,7 +51,6 @@ fun AtavusChatButton(
                 .clickable { showChat = true },
             shape = CircleShape,
             color = theme.primaryColor,
-            elevation = ButtonDefaults.buttonElevation()
         ) {
             Box(contentAlignment = Alignment.Center) {
                 Text(
